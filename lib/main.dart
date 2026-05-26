@@ -415,153 +415,133 @@ class _TodoPageState extends State<TodoPage> {
                       (context, index) {
                     final todo =
                         _todos[index];
-
                     return Dismissible(
-                      key:
-                          ValueKey(todo.id),
+                      key: ValueKey(todo.id),
 
                       direction:
-                          DismissDirection
-                              .horizontal,
+                          DismissDirection.horizontal,
 
                       confirmDismiss:
                           (direction) async {
-                        // 未完了
+                        // =====================
+                        // 未完了タスク
+                        // =====================
+
                         if (!todo.completed) {
-                          _completeTodo(
-                            todo.id,
-                          );
+                          _completeTodo(todo.id);
                         }
 
-                        // 完了済み
+                        // =====================
+                        // 完了済みタスク
+                        // =====================
+
                         else {
-                          // 左→右
+                          // 右スワイプ → 削除
                           if (direction ==
                               DismissDirection
                                   .startToEnd) {
-                            _restoreTodo(
-                              todo.id,
-                            );
+                            _deleteTodo(todo.id);
                           }
 
-                          // 右→左
+                          // 左スワイプ → 戻す
                           else {
-                            _deleteTodo(
-                              todo.id,
-                            );
+                            _restoreTodo(todo.id);
                           }
                         }
 
                         return false;
                       },
 
-                      background:
-                          Container(
-                        decoration:
-                            BoxDecoration(
-                          color: todo
-                                  .completed
-                              ? Colors.orange
-                              : Colors.green,
-                          borderRadius:
-                              BorderRadius
-                                  .circular(
-                            20,
-                          ),
-                        ),
-                        alignment:
-                            Alignment
-                                .centerLeft,
-                        padding:
-                            const EdgeInsets
-                                .symmetric(
-                          horizontal: 20,
-                        ),
-                        child: Icon(
-                          todo.completed
-                              ? Icons.undo
-                              : Icons.check,
-                          color:
-                              Colors.white,
-                          size: 30,
-                        ),
-                      ),
+                      // =====================
+                      // 左→右背景
+                      // =====================
+
+                      background: todo.completed
+                          ? Container(
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius:
+                                    BorderRadius.circular(
+                                  20,
+                                ),
+                              ),
+                              alignment:
+                                  Alignment.centerLeft,
+                              padding:
+                                  const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              child: const Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                            )
+
+                          // 未完了時は背景なし
+                          : null,
+
+                      // =====================
+                      // 右→左背景
+                      // =====================
 
                       secondaryBackground:
-                          Container(
-                        decoration:
-                            BoxDecoration(
-                          color: todo
-                                  .completed
-                              ? Colors.red
-                              : Colors.green,
-                          borderRadius:
-                              BorderRadius
-                                  .circular(
-                            20,
-                          ),
-                        ),
-                        alignment:
-                            Alignment
-                                .centerRight,
-                        padding:
-                            const EdgeInsets
-                                .symmetric(
-                          horizontal: 20,
-                        ),
-                        child: Icon(
                           todo.completed
-                              ? Icons.delete
-                              : Icons.check,
-                          color:
-                              Colors.white,
-                          size: 30,
-                        ),
-                      ),
+                              ? Container(
+                                  decoration:
+                                      BoxDecoration(
+                                    color: Colors.orange,
+                                    borderRadius:
+                                        BorderRadius.circular(
+                                      20,
+                                    ),
+                                  ),
+                                  alignment:
+                                      Alignment.centerRight,
+                                  padding:
+                                      const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                  ),
+                                  child: const Icon(
+                                    Icons.undo,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                )
 
-                      child:
-                          GestureDetector(
+                              // 未完了時は背景なし
+                              : null,
+
+                      child: GestureDetector(
                         onDoubleTap: () {
                           _editTodo(todo);
                         },
+
                         onLongPress: () {
-                          _showDeleteDialog(
-                            todo,
-                          );
+                          _showDeleteDialog(todo);
                         },
-                        child:
-                            AnimatedContainer(
-                          duration:
-                              const Duration(
-                            milliseconds:
-                                250,
+
+                        child: AnimatedContainer(
+                          duration: const Duration(
+                            milliseconds: 250,
                           ),
-                          width:
-                              double.infinity,
+                          width: double.infinity,
                           padding:
                               const EdgeInsets.symmetric(
-                            horizontal:
-                                20,
+                            horizontal: 20,
                             vertical: 18,
                           ),
-                          decoration:
-                              BoxDecoration(
-                            color: todo
-                                    .completed
-                                ? const Color(
-                                    0xFF14532D)
-                                : const Color(
-                                    0xFF1E293B),
+                          decoration: BoxDecoration(
+                            color: todo.completed
+                                ? const Color(0xFF14532D)
+                                : const Color(0xFF1E293B),
                             borderRadius:
                                 BorderRadius.circular(
                               20,
                             ),
-                            border:
-                                Border.all(
-                              color: todo
-                                      .completed
-                                  ? Colors
-                                      .green
+                            border: Border.all(
+                              color: todo.completed
+                                  ? Colors.green
                                   : const Color(
                                       0xFF334155,
                                     ),
@@ -572,27 +552,22 @@ class _TodoPageState extends State<TodoPage> {
                               Expanded(
                                 child: Text(
                                   todo.text,
-                                  style:
-                                      TextStyle(
-                                    color: Colors
-                                        .white,
-                                    fontSize:
-                                        18,
-                                    decoration: todo
-                                            .completed
-                                        ? TextDecoration
-                                            .lineThrough
-                                        : null,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    decoration:
+                                        todo.completed
+                                            ? TextDecoration
+                                                .lineThrough
+                                            : null,
                                   ),
                                 ),
                               ),
-                              if (todo
-                                  .completed)
+
+                              if (todo.completed)
                                 const Icon(
-                                  Icons
-                                      .check_circle,
-                                  color: Colors
-                                      .green,
+                                  Icons.check_circle,
+                                  color: Colors.green,
                                 ),
                             ],
                           ),
